@@ -25,11 +25,21 @@ class DQN:
     def __init__(self: "DQN") -> None:
         """Initialize the DQN agent with all necessary components."""
         # TODO: Initialize training statistics
+        self.n_game: int = 0
         # TODO: Initialize epsilon-greedy exploration parameters
+        self.epsilon: int = EPS_START
         # TODO: Initialize memory for experience replay
+        self.gamma: float = GAMMA
         # TODO: Initialize the neural network and trainer
 
-        pass
+        self._last_score: int = 0
+
+        input_size = 11
+        hidden_size = 256
+        output_size = 3
+        self.model = LinearQNet(input_size, hidden_size, output_size)
+        self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+
 
     def get_state(self, game: "Game") -> List[float]:
         """
@@ -42,7 +52,9 @@ class DQN:
         - Current snake direction
         """
         # TODO: Get the snake's head position
+        head: Point = game.head
         # TODO: Helper function to normalize distances
+
         # TODO: Get current direction as one-hot encoding
 
         # TODO: Detect dangers in three directions relative to current direction
@@ -63,13 +75,15 @@ class DQN:
         - Small negative reward for moving away from food
         - Large negative reward for dying
         """
-        # TODO: Initialize reward
-        # TODO: Get current positions
-        # TODO: Calculate distance-based rewards
-        # TODO: Big reward for eating food
-        # TODO: Big penalty for dying
+        reward = 0 
+        if done:
+            reward = -10
+        else:
+            if game.score > self._last_score:
+                reward = +10
+        self._last_score = game.score
+        return reward
 
-        return 0
 
     def remember(
         self,
@@ -81,8 +95,8 @@ class DQN:
     ) -> None:
         """Store an experience in memory for later training (experience replay)."""
         # TODO: Add the experience to memory
+        self.memory.append((state,action,reward,next_state,done))
 
-        pass
 
     def train_long_memory(self) -> None:
         """Train the neural network on a batch of experiences from memory."""

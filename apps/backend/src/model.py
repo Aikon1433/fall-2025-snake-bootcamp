@@ -1,10 +1,10 @@
 # TODO: Import PyTorch for building neural networks
-# import torch
-# import torch.optim as optim
-# import torch.nn as nn
-# import torch.nn.functional as F
-# import os
-# import datetime
+import torch
+import torch.optim as optim
+import torch.nn as nn
+import torch.nn.functional as F
+import os
+import datetime
 from typing import Any
 
 
